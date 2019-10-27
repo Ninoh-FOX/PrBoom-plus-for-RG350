@@ -1,0 +1,379 @@
+Index: src/m_menu.c
+===================================================================
+--- src/m_menu.c	(revision 4303)
++++ src/m_menu.c	(working copy)
+@@ -633,7 +633,7 @@
+ /* cph - make `New Game' restart the level in a netgame */
+ static void M_RestartLevelResponse(int ch)
+ {
+-  if (ch != 'y')
++  if (ch != 'y' && ch != key_menu_enter) //JohnnyonFlame
+     return;
+ 
+   if (demorecording)
+@@ -671,7 +671,7 @@
+ // CPhipps - static
+ static void M_VerifyNightmare(int ch)
+ {
+-  if (ch != 'y')
++  if (ch != 'y' && ch != key_menu_enter) //JohnnyonFlame
+     return;
+ 
+   G_DeferedInitNew(nightmare,epi+1,1);
+@@ -935,6 +935,8 @@
+   if (!strcmp(savegamestrings[choice],s_EMPTYSTRING)) // Ty 03/27/98 - externalized
+     savegamestrings[choice][0] = 0;
+   saveCharIndex = strlen(savegamestrings[choice]);
++  snprintf(savegamestrings[choice], SAVESTRINGSIZE, "E%iM%i, KILLS: %i", gameepisode, gamemap, totalkills);
++  //JohnnyonFlame- Added save autonaming
+ }
+ 
+ //
+@@ -1070,7 +1072,7 @@
+ 
+ static void M_QuitResponse(int ch)
+ {
+-  if (ch != 'y')
++  if (ch != 'y' && ch != key_menu_enter) //JohnnyonFlame
+     return;
+   
+   //e6y: Optional removal of a quit sound
+@@ -1337,7 +1339,7 @@
+ 
+ static void M_QuickSaveResponse(int ch)
+ {
+-  if (ch == 'y')  {
++  if (ch == 'y' || ch == key_menu_enter)  { //JohnnyonFlame
+     M_DoSave(quickSaveSlot);
+     S_StartSound(NULL,sfx_swtchx);
+   }
+@@ -1371,7 +1373,7 @@
+ 
+ static void M_QuickLoadResponse(int ch)
+ {
+-  if (ch == 'y') {
++  if (ch == 'y' || ch == key_menu_enter)  { //JohnnyonFlame
+     M_LoadSelect(quickSaveSlot);
+     S_StartSound(NULL,sfx_swtchx);
+   }
+@@ -1403,7 +1405,7 @@
+ 
+ static void M_EndGameResponse(int ch)
+ {
+-  if (ch != 'y')
++  if (ch != 'y' && ch != key_menu_enter) //JohnnyonFlame
+     return;
+ 
+   // killough 5/26/98: make endgame quit if recording or playing back demo
+@@ -4033,7 +4035,7 @@
+ // M_GetKeyString finds the correct string to represent the key binding
+ // for the current item being drawn.
+ 
+-int M_GetKeyString(int c,int offset)
++/*int M_GetKeyString(int c,int offset)
+ {
+   const char* s;
+ 
+@@ -4111,6 +4113,35 @@
+     }
+   }
+   return offset;
++}*/
++
++//JohnnyonFlame: GCW0 Specific controller scheme
++int M_GetKeyString(int c,int offset)
++{
++  const char* s;
++
++  switch(c) {
++  case KEYD_TAB:      s = "R";  break;
++  case KEYD_ENTER:      s = "START"; break;
++  case KEYD_ESCAPE:     s = "SELECT";  break;
++  case KEYD_SPACEBAR:   s = "Y"; break;
++  case KEYD_BACKSPACE:  s = "L"; break;
++  case KEYD_RCTRL:      s = "B"; break;
++  case KEYD_LEFTARROW:  s = "LEFT"; break;
++  case KEYD_UPARROW:    s = "UP"; break;
++  case KEYD_RIGHTARROW: s = "RIGHT"; break;
++  case KEYD_DOWNARROW:  s = "DOWN"; break;
++  case KEYD_RSHIFT:     s = "X"; break;
++  case KEYD_RALT:       s = "A";  break;
++  default:              s = ""; break;
++  }
++
++  if (s) { // cph - Slight code change
++	  strcpy(&menu_buffer[offset],s); // string to display
++	  offset += strlen(s);
++  }
++
++  return offset;
+ }
+ 
+ //
+@@ -4523,7 +4554,7 @@
+ 
+   if (messageToPrint) {
+     if (messageNeedsInput == true &&
+-  !(ch == ' ' || ch == 'n' || ch == 'y' || ch == key_escape)) // phares
++  !(ch == ' ' || ch == 'n' || ch == 'y' || ch == key_escape || ch == key_menu_backspace || ch == key_menu_enter)) // phares //JohnnyonFlame
+       return false;
+ 
+     menuactive = messageLastMenuActive;
+Index: src/SDL/i_video.c
+===================================================================
+--- src/SDL/i_video.c	(revision 4303)
++++ src/SDL/i_video.c	(working copy)
+@@ -705,8 +705,8 @@
+ {
+   int width, height;
+ 
+-  desired_screenwidth = 640;
+-  desired_screenheight = 480;
++  desired_screenwidth = 320;
++  desired_screenheight = 240;
+ 
+   if (screen_resolution)
+   {
+@@ -1463,7 +1463,7 @@
+   SDL_ShowCursor(0);
+ #else
+   SDL_SetCursor(cursors[1]);
+-  SDL_ShowCursor(1);
++  SDL_ShowCursor(0); //JohnnyonFlame- never show the cursor
+ #endif
+ }
+ 
+@@ -1473,7 +1473,7 @@
+ #if !SDL_VERSION_ATLEAST(1, 3, 0)
+   SDL_SetCursor(cursors[0]);
+ #endif
+-  SDL_ShowCursor(1);
++  SDL_ShowCursor(0); //JohnnyonFlame- never show the cursor
+ }
+ 
+ // Warp the mouse back to the middle of the screen
+Index: src/m_misc.c
+===================================================================
+--- src/m_misc.c	(revision 4303)
++++ src/m_misc.c	(working copy)
+@@ -396,14 +396,14 @@
+   #ifdef _MSC_VER
+     {"videomode",{NULL, &default_videomode},{0,"OpenGL"},UL,UL,def_str,ss_none},
+   #else
+-    {"videomode",{NULL, &default_videomode},{0,"8"},UL,UL,def_str,ss_none},
++    {"videomode",{NULL, &default_videomode},{0,"32"},UL,UL,def_str,ss_none},
+   #endif
+   {"use_gl_surface",{&use_gl_surface},{0},0,1,def_bool,ss_none},
+ #else
+   {"videomode",{NULL, &default_videomode},{0,"8"},UL,UL,def_str,ss_none},
+ #endif
+   /* 640x480 default resolution */
+-  {"screen_resolution",{NULL, &screen_resolution},{0,"640x480"},UL,UL,def_str,ss_none},
++  {"screen_resolution",{NULL, &screen_resolution},{0,"320x240"},UL,UL,def_str,ss_none},
+   {"use_fullscreen",{&use_fullscreen},{0},0,1, /* proff 21/05/2000 */
+    def_bool,ss_none},
+ #ifndef DISABLE_DOUBLEBUFFER
+@@ -536,7 +536,9 @@
+ // file are the keyboard codes.
+ // CPhipps - now they're the doom codes, so default.cfg can be portable
+ 
+-  {"Key bindings",{NULL},{0},UL,UL,def_none,ss_none},
++
++   //JohnnyonFlame - Commented out the default PC controllers in favor of using GCW0 Specifics
++  /*{"Key bindings",{NULL},{0},UL,UL,def_none,ss_none},
+   {"key_right",       {&key_right},          {KEYD_RIGHTARROW},
+    0,MAX_KEY,def_key,ss_keys}, // key to turn right
+   {"key_left",        {&key_left},           {KEYD_LEFTARROW} ,
+@@ -687,8 +689,164 @@
+ 
+   // killough 2/22/98: screenshot key
+   {"key_screenshot",  {&key_screenshot},      {'*'}            ,
+-   0,MAX_KEY,def_key,ss_keys}, // key to take a screenshot
++   0,MAX_KEY,def_key,ss_keys}, // key to take a screenshot*/
+ 
++   /*BEGINNING OF SPECIFIC GCW0 Controllers*/
++   {"Key bindings",{NULL},{0},UL,UL,def_none,ss_none},
++     {"key_right",       {&key_right},          {KEYD_RIGHTARROW},
++      0,MAX_KEY,def_key,ss_keys}, // key to turn right
++     {"key_left",        {&key_left},           {KEYD_LEFTARROW} ,
++      0,MAX_KEY,def_key,ss_keys}, // key to turn left
++     {"key_up",          {&key_up},             {KEYD_UPARROW}   ,
++      0,MAX_KEY,def_key,ss_keys}, // key to move forward
++     {"key_down",        {&key_down},           {KEYD_DOWNARROW},
++      0,MAX_KEY,def_key,ss_keys}, // key to move backward
++     {"key_mlook",       {&key_mlook},           {'\\'},
++      0,MAX_KEY,def_key,ss_keys}, // key to move backward
++     {"key_menu_right",  {&key_menu_right},     {KEYD_RIGHTARROW},// phares 3/7/98
++      0,MAX_KEY,def_key,ss_keys}, // key to move right in a menu  //     |
++     {"key_menu_left",   {&key_menu_left},      {KEYD_LEFTARROW} ,//     V
++      0,MAX_KEY,def_key,ss_keys}, // key to move left in a menu
++     {"key_menu_up",     {&key_menu_up},        {KEYD_UPARROW}   ,
++      0,MAX_KEY,def_key,ss_keys}, // key to move up in a menu
++     {"key_menu_down",   {&key_menu_down},      {KEYD_DOWNARROW} ,
++      0,MAX_KEY,def_key,ss_keys}, // key to move down in a menu
++     {"key_menu_backspace",{&key_menu_backspace},{KEYD_RALT} ,
++      0,MAX_KEY,def_key,ss_keys}, // delete key in a menu
++     {"key_menu_escape", {&key_menu_escape},    {KEYD_ENTER}    ,
++      0,MAX_KEY,def_key,ss_keys}, // key to leave a menu      ,   // phares 3/7/98
++     {"key_menu_enter",  {&key_menu_enter},     {KEYD_RCTRL}     ,
++      0,MAX_KEY,def_key,ss_keys}, // key to select from menu
++     {"key_setup",       {&key_setup},          {-1},
++      0,MAX_KEY,def_key,ss_keys}, //e6y: key for entering setup menu
++     {"key_strafeleft",  {&key_strafeleft},     {'a'}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to strafe left
++     {"key_straferight", {&key_straferight},    {'d'}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to fly up
++     {"key_flyup",  {&key_flyup}, {'.'},
++      0,MAX_KEY,def_key,ss_keys}, // key to fly down
++     {"key_flydown", {&key_flydown}, {','},
++      0,MAX_KEY,def_key,ss_keys}, // key to strafe right
++
++     {"key_fire",        {&key_fire},           {KEYD_RSHIFT}     ,
++      0,MAX_KEY,def_key,ss_keys}, // duh
++     {"key_use",         {&key_use},            {' '}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to open a door, use a switch
++     {"key_strafe",      {&key_strafe},         {KEYD_RALT}      ,
++      0,MAX_KEY,def_key,ss_keys}, // key to use with arrows to strafe
++     {"key_speed",       {&key_speed},          {KEYD_RCTRL}    ,
++      0,MAX_KEY,def_key,ss_keys}, // key to run
++
++     {"key_savegame",    {&key_savegame},       {KEYD_F2}        ,
++      0,MAX_KEY,def_key,ss_keys}, // key to save current game
++     {"key_loadgame",    {&key_loadgame},       {KEYD_F3}        ,
++      0,MAX_KEY,def_key,ss_keys}, // key to restore from saved games
++     {"key_soundvolume", {&key_soundvolume},    {KEYD_F4}        ,
++      0,MAX_KEY,def_key,ss_keys}, // key to bring up sound controls
++     {"key_hud",         {&key_hud},            {KEYD_F5}        ,
++      0,MAX_KEY,def_key,ss_keys}, // key to adjust HUD
++     {"key_quicksave",   {&key_quicksave},      {KEYD_F6}        ,
++      0,MAX_KEY,def_key,ss_keys}, // key to to quicksave
++     {"key_endgame",     {&key_endgame},        {KEYD_F7}        ,
++      0,MAX_KEY,def_key,ss_keys}, // key to end the game
++     {"key_messages",    {&key_messages},       {KEYD_F8}        ,
++      0,MAX_KEY,def_key,ss_keys}, // key to toggle message enable
++     {"key_quickload",   {&key_quickload},      {KEYD_F9}        ,
++      0,MAX_KEY,def_key,ss_keys}, // key to load from quicksave
++     {"key_quit",        {&key_quit},           {KEYD_F10}       ,
++      0,MAX_KEY,def_key,ss_keys}, // key to quit game
++     {"key_gamma",       {&key_gamma},          {KEYD_F11}       ,
++      0,MAX_KEY,def_key,ss_keys}, // key to adjust gamma correction
++     {"key_spy",         {&key_spy},            {KEYD_F12}       ,
++      0,MAX_KEY,def_key,ss_keys}, // key to view from another coop player's view
++     {"key_pause",       {&key_pause},          {KEYD_PAUSE}     ,
++      0,MAX_KEY,def_key,ss_keys}, // key to pause the game
++     {"key_autorun",     {&key_autorun},        {KEYD_CAPSLOCK}  ,
++      0,MAX_KEY,def_key,ss_keys}, // key to toggle always run mode
++     {"key_chat",        {&key_chat},           {'t'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to enter a chat message
++     {"key_backspace",   {&key_backspace},      {KEYD_BACKSPACE} ,
++      0,MAX_KEY,def_key,ss_keys}, // backspace key
++     {"key_enter",       {&key_enter},          {KEYD_ENTER}     ,
++      0,MAX_KEY,def_key,ss_keys}, // key to select from menu or see last message
++     {"key_map",         {&key_map},            {KEYD_ESCAPE}       ,
++      0,MAX_KEY,def_key,ss_keys}, // key to toggle automap display
++     {"key_map_right",   {&key_map_right},      {KEYD_RIGHTARROW},// phares 3/7/98
++      0,MAX_KEY,def_key,ss_keys}, // key to shift automap right   //     |
++     {"key_map_left",    {&key_map_left},       {KEYD_LEFTARROW} ,//     V
++      0,MAX_KEY,def_key,ss_keys}, // key to shift automap left
++     {"key_map_up",      {&key_map_up},         {KEYD_UPARROW}   ,
++      0,MAX_KEY,def_key,ss_keys}, // key to shift automap up
++     {"key_map_down",    {&key_map_down},       {KEYD_DOWNARROW} ,
++      0,MAX_KEY,def_key,ss_keys}, // key to shift automap down
++     {"key_map_zoomin",  {&key_map_zoomin},      {'='}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to enlarge automap
++     {"key_map_zoomout", {&key_map_zoomout},     {'-'}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to reduce automap
++     {"key_map_gobig",   {&key_map_gobig},       {'0'}           ,
++      0,MAX_KEY,def_key,ss_keys},  // key to get max zoom for automap
++     {"key_map_follow",  {&key_map_follow},      {'f'}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to toggle follow mode
++     {"key_map_mark",    {&key_map_mark},        {'m'}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to drop a marker on automap
++     {"key_map_clear",   {&key_map_clear},       {'c'}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to clear all markers on automap
++     {"key_map_grid",    {&key_map_grid},        {'g'}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to toggle grid display over automap
++     {"key_map_rotate",  {&key_map_rotate},      {'r'}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to toggle rotating the automap to match the player's orientation
++     {"key_map_overlay", {&key_map_overlay},     {'o'}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to toggle overlaying the automap on the rendered display
++   #ifdef GL_DOOM
++     {"key_map_textured", {&key_map_textured},   {-1}             ,
++      0,MAX_KEY,def_key,ss_keys}, // key to toggle textured automap
++   #endif
++     {"key_reverse",     {&key_reverse},         {'/'}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to spin 180 instantly
++     {"key_zoomin",      {&key_zoomin},          {'='}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to enlarge display
++     {"key_zoomout",     {&key_zoomout},         {'-'}           ,
++      0,MAX_KEY,def_key,ss_keys}, // key to reduce display
++     {"key_chatplayer1", {&destination_keys[0]}, {'g'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to chat with player 1
++     // killough 11/98: fix 'i'/'b' reversal
++     {"key_chatplayer2", {&destination_keys[1]}, {'i'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to chat with player 2
++     {"key_chatplayer3", {&destination_keys[2]}, {'b'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to chat with player 3
++     {"key_chatplayer4", {&destination_keys[3]}, {'r'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to chat with player 4
++     {"key_weapontoggle",{&key_weapontoggle},    {'0'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to toggle between two most preferred weapons with ammo
++     {"key_weapon1",     {&key_weapon1},         {'1'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to switch to weapon 1 (fist/chainsaw)
++     {"key_weapon2",     {&key_weapon2},         {'2'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to switch to weapon 2 (pistol)
++     {"key_weapon3",     {&key_weapon3},         {'3'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to switch to weapon 3 (supershotgun/shotgun)
++     {"key_weapon4",     {&key_weapon4},         {'4'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to switch to weapon 4 (chaingun)
++     {"key_weapon5",     {&key_weapon5},         {'5'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to switch to weapon 5 (rocket launcher)
++     {"key_weapon6",     {&key_weapon6},         {'6'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to switch to weapon 6 (plasma rifle)
++     {"key_weapon7",     {&key_weapon7},         {'7'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to switch to weapon 7 (bfg9000)         //    ^
++     {"key_weapon8",     {&key_weapon8},         {'8'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to switch to weapon 8 (chainsaw)        //    |
++     {"key_weapon9",     {&key_weapon9},         {'9'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to switch to weapon 9 (supershotgun)    // phares
++     {"key_nextweapon",  {&key_nextweapon},      {KEYD_BACKSPACE}  ,
++      0,MAX_KEY,def_key,ss_keys}, // key to cycle to the next weapon
++     {"key_prevweapon",  {&key_prevweapon},      {KEYD_TAB},
++      0,MAX_KEY,def_key,ss_keys}, // key to cycle to the previous weapon
++
++     // killough 2/22/98: screenshot key
++     {"key_screenshot",  {&key_screenshot},      {'*'}            ,
++      0,MAX_KEY,def_key,ss_keys}, // key to take a screenshot
++      /*END OF SPECIFIC GCW0 CONTROLLERS*/
++
++
+   {"Joystick settings",{NULL},{0},UL,UL,def_none,ss_none},
+   {"use_joystick",{&usejoystick},{0},0,2,
+    def_int,ss_none}, // number of joystick to use (0 for none)
+Index: src/MUSIC/flplayer.c
+===================================================================
+--- src/MUSIC/flplayer.c	(revision 4303)
++++ src/MUSIC/flplayer.c	(working copy)
+@@ -154,6 +154,9 @@
+   FSET (str, "synth-midi-bank-select", "gm"); // general midi mode
+   // general midi spec says no more than 24 voices needed
+   FSET (int, "synth-polyphony", 24);
++  FSET (int, "audio.periods", 2);
++  FSET (int, "audio.period-size", 32);
++  //FSET (str, "audio.sample-format", "float");
+ 
+   // we're not using the builtin shell or builtin midiplayer,
+   // and our own access to the synth is protected by mutex in i_sound.c
+Index: src/g_game.c
+===================================================================
+--- src/g_game.c	(revision 4303)
++++ src/g_game.c	(working copy)
+@@ -180,7 +180,7 @@
+ int     key_use;
+ int     key_strafe;
+ int     key_speed;
+-int     key_escape = KEYD_ESCAPE;                           // phares 4/13/98
++int     key_escape = KEYD_ENTER;                           // phares 4/13/98 //JohnnyonFlame
+ int     key_savegame;                                               // phares
+ int     key_loadgame;                                               //    |
+ int     key_autorun;                                                //    V

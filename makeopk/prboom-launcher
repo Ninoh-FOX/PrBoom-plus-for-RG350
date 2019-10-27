@@ -1,0 +1,25 @@
+#!/bin/sh
+
+found=0
+doomwads=" doom2f.wad \
+doom2.wad \
+plutonia.wad \
+tnt.wad \
+doom.wad \
+doom1.wad \
+doomu.wad \
+freedoom.wad \
+"
+selwad=$(basename "$1")
+selwad=`basename "$1" | tr '[A-Z]' '[a-z]'`
+
+for item in $doomwads
+do
+ [ "$item" == "$selwad" ] && found=1
+done
+
+if [ "$found" == "1" ]; then
+ ./prboom-plus -iwad $1
+else
+ ./prboom-plus $1
+fi
