@@ -273,8 +273,6 @@ typedef enum {
 #define KEYD_LALT       (0x80+0x38)
 #define KEYD_LCTRL      (0x80+0x1d)
 #define KEYD_LSHIFT     (0x80+0x76)
-#define KEYD_BACKSLASH   (0x80+0x80+0x2e)
-#define KEYD_DOT     (0x80+0x80+0x2f)
 #define KEYD_RALT     KEYD_LALT
 #define KEYD_RCTRL     KEYD_LCTRL
 #define KEYD_CAPSLOCK        0xba                                        // phares
@@ -308,11 +306,11 @@ typedef enum {
 #define KEYD_KEYPAD8      (0x100 + '8')
 #define KEYD_KEYPAD9      (0x100 + '9')
 #define KEYD_KEYPADENTER  (0x100 + KEYD_ENTER)
-#define KEYD_KEYPADDIVIDE (0x100 + '/')
+#define KEYD_KEYPADDIVIDE 0x12f
 #define KEYD_KEYPADMULTIPLY (0x100 + '*')
 #define KEYD_KEYPADMINUS  (0x100 + '-')
 #define KEYD_KEYPADPLUS   (0x100 + '+')
-#define KEYD_KEYPADPERIOD (0x100 + '.')
+#define KEYD_KEYPADPERIOD 0x12e
 
 // haleyjd: virtual keys
 #define KEYD_MOUSE1     (0x80 + 0x60)

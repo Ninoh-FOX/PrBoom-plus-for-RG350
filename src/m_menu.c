@@ -4061,7 +4061,7 @@ int M_GetKeyString(int c,int offset)
       case KEYD_UPARROW:    s = "UP"; break;
       case KEYD_RIGHTARROW: s = "RIGHT"; break;
       case KEYD_DOWNARROW:  s = "DOWN"; break;
-      case KEYD_RSHIFT:     s = "Y"; break;
+      case KEYD_RSHIFT:     s = "SHIFT"; break;
       case KEYD_CAPSLOCK:   s = "CAPS"; break;
       case KEYD_SCROLLLOCK: s = "SCRL"; break;
       case KEYD_HOME:       s = "POWER"; break;
@@ -4078,9 +4078,9 @@ int M_GetKeyString(int c,int offset)
       case KEYD_MWHEELUP:   s = "MWUP"; break;
       case KEYD_LCTRL:      s = "A";break;
       case KEYD_LALT:    s = "B";break;
-      case KEYD_LSHIFT:    s = "SHFT";break;
-      case KEYD_DOT:    s = "L3";break;
-      case KEYD_BACKSLASH:       s = "R3";break;
+      case KEYD_LSHIFT:    s = "Y";break;
+      case KEYD_KEYPADDIVIDE:    s = "L3";break;
+      case KEYD_KEYPADPERIOD:    s = "R3";break;
       default:              s = "JUNK"; break;
       }
 

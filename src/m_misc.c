@@ -559,7 +559,7 @@ default_t defaults[] =
    0,MAX_KEY,def_key,ss_keys}, // key to leave a menu      ,   // phares 3/7/98
   {"key_menu_enter",  {&key_menu_enter},     {0x9d}     ,
    0,MAX_KEY,def_key,ss_keys}, // key to select from menu
-  {"key_setup",       {&key_setup},          {0x00},
+  {"key_setup",       {&key_setup},          {0xff},
    0,MAX_KEY,def_key,ss_keys}, //e6y: key for entering setup menu
   {"key_strafeleft",  {&key_strafeleft},     {0x9}           ,
    0,MAX_KEY,def_key,ss_keys}, // key to strafe left
@@ -570,7 +570,7 @@ default_t defaults[] =
    0,MAX_KEY,def_key,ss_keys}, // duh
   {"key_use",         {&key_use},            {0xb8}           ,
    0,MAX_KEY,def_key,ss_keys}, // key to open a door, use a switch
-  {"key_strafe",      {&key_strafe},         {0xb6}      ,
+  {"key_strafe",      {&key_strafe},         {0x80+0x76}      ,
    0,MAX_KEY,def_key,ss_keys}, // key to use with arrows to strafe
   {"key_speed",       {&key_speed},          {0x20}    ,
    0,MAX_KEY,def_key,ss_keys}, // key to run
@@ -773,11 +773,11 @@ default_t defaults[] =
   {"mapcolor_frnd",   {&mapcolor_frnd}, {112},0,255,
    def_colour,ss_auto},
   //jff 3/9/98 add option to not show secrets til after found
-  {"map_secret_after", {&map_secret_after}, {0},0,1, // show secret after gotten
+  {"map_secret_after", {&map_secret_after}, {1},0,1, // show secret after gotten
    def_bool,ss_auto}, // prevents showing secret sectors till after entered
-  {"map_point_coord", {&map_point_coordinates}, {0},0,1,
+  {"map_point_coord", {&map_point_coordinates}, {1},0,1,
    def_bool,ss_auto},
-  {"map_level_stat", {&map_level_stat}, {0},0,1,
+  {"map_level_stat", {&map_level_stat}, {1},0,1,
    def_bool,ss_auto},
   //jff 1/7/98 end additions for automap
   {"automapmode", {(int*)&automapmode}, {0}, 0, 31, // CPhipps - remember automap mode
@@ -865,41 +865,41 @@ default_t defaults[] =
 
 //e6y
   {"Prboom-plus key bindings",{NULL},{0},UL,UL,def_none,ss_none},
-  {"key_speedup", {&key_speed_up}, {},
+  {"key_speedup", {&key_speed_up}, {0x80+0x3b},
    0,MAX_KEY,def_key,ss_keys},
-  {"key_speeddown", {&key_speed_down}, {},
+  {"key_speeddown", {&key_speed_down}, {0x80+0x3c},
    0,MAX_KEY,def_key,ss_keys},
-  {"key_speeddefault", {&key_speed_default}, {},
+  {"key_speeddefault", {&key_speed_default}, {0x80+0x3d},
    0,MAX_KEY,def_key,ss_keys},
-  {"speed_step",{&speed_step},{0},0,1000,
+  {"speed_step",{&speed_step},{0x80+0x3e},0,1000,
    def_int,ss_none},
-  {"key_demo_skip", {&key_demo_skip}, {},
+  {"key_demo_skip", {&key_demo_skip}, {0x80+0x3f},
    0,MAX_KEY,def_key,ss_keys},
-  {"key_level_restart", {&key_level_restart}, {},
+  {"key_level_restart", {&key_level_restart}, {0x80+0x40},
    0,MAX_KEY,def_key,ss_keys},
-  {"key_nextlevel", {&key_nextlevel}, {},
+  {"key_nextlevel", {&key_nextlevel}, {0x80+0x41},
    0,MAX_KEY,def_key,ss_keys},
-  {"key_demo_jointogame", {&key_demo_jointogame}, {},
+  {"key_demo_jointogame", {&key_demo_jointogame}, {0x80+0x42},
    0,MAX_KEY,def_key,ss_keys},
-  {"key_demo_endlevel", {&key_demo_endlevel}, {},
+  {"key_demo_endlevel", {&key_demo_endlevel}, {0x80+0x43},
    0,MAX_KEY,def_key,ss_keys},
-  {"key_walkcamera", {&key_walkcamera}, {},
+  {"key_walkcamera", {&key_walkcamera}, {0x80+0x44},
    0,MAX_KEY,def_key,ss_keys},
-  {"key_showalive", {&key_showalive}, {},
+  {"key_showalive", {&key_showalive}, {0x80+0x57},
    0,MAX_KEY,def_key,ss_keys},
 
   {"Prboom-plus heads-up display settings",{NULL},{0},UL,UL,def_none,ss_none},
-  {"hudadd_gamespeed", {&hudadd_gamespeed},  {0},0,1,
+  {"hudadd_gamespeed", {&hudadd_gamespeed},  {1},0,1,
    def_bool,ss_stat},
-  {"hudadd_leveltime", {&hudadd_leveltime},  {0},0,1,
+  {"hudadd_leveltime", {&hudadd_leveltime},  {1},0,1,
    def_bool,ss_stat},
-  {"hudadd_demotime", {&hudadd_demotime},  {0},0,1,
+  {"hudadd_demotime", {&hudadd_demotime},  {1},0,1,
    def_bool,ss_stat},
-  {"hudadd_secretarea", {&hudadd_secretarea},  {0},0,1,
+  {"hudadd_secretarea", {&hudadd_secretarea},  {1},0,1,
    def_bool,ss_stat},
-  {"hudadd_smarttotals", {&hudadd_smarttotals},  {0},0,1,
+  {"hudadd_smarttotals", {&hudadd_smarttotals},  {1},0,1,
    def_bool,ss_stat},
-  {"hudadd_demoprogressbar", {&hudadd_demoprogressbar},  {0},0,1,
+  {"hudadd_demoprogressbar", {&hudadd_demoprogressbar},  {1},0,1,
    def_bool,ss_stat},
 
   //e6y
@@ -1057,29 +1057,29 @@ default_t defaults[] =
    def_bool,ss_none},
 #endif
   {"Prboom-plus emulation settings",{NULL},{0},UL,UL,def_none,ss_none},
-  {"overrun_spechit_warn", {&overflows[OVERFLOW_SPECHIT].warn},  {0},0,1,
+  {"overrun_spechit_warn", {&overflows[OVERFLOW_SPECHIT].warn},  {1},0,1,
    def_bool,ss_stat},
   {"overrun_spechit_emulate", {&overflows[OVERFLOW_SPECHIT].emulate},  {1},0,1,
    def_bool,ss_stat},
-  {"overrun_reject_warn", {&overflows[OVERFLOW_REJECT].warn},  {0},0,1,
+  {"overrun_reject_warn", {&overflows[OVERFLOW_REJECT].warn},  {1},0,1,
    def_bool,ss_stat},
   {"overrun_reject_emulate", {&overflows[OVERFLOW_REJECT].emulate},  {1},0,1,
    def_bool,ss_stat},
-  {"overrun_intercept_warn", {&overflows[OVERFLOW_INTERCEPT].warn},  {0},0,1,
+  {"overrun_intercept_warn", {&overflows[OVERFLOW_INTERCEPT].warn},  {1},0,1,
    def_bool,ss_stat},
   {"overrun_intercept_emulate", {&overflows[OVERFLOW_INTERCEPT].emulate},  {1},0,1,
    def_bool,ss_stat},
-  {"overrun_playeringame_warn", {&overflows[OVERFLOW_PLYERINGAME].warn},  {0},0,1,
+  {"overrun_playeringame_warn", {&overflows[OVERFLOW_PLYERINGAME].warn},  {1},0,1,
    def_bool,ss_stat},
   {"overrun_playeringame_emulate", {&overflows[OVERFLOW_PLYERINGAME].emulate},  {1},0,1,
    def_bool,ss_stat},
-  {"overrun_donut_warn", {&overflows[OVERFLOW_DONUT].warn},  {0},0,1,
+  {"overrun_donut_warn", {&overflows[OVERFLOW_DONUT].warn},  {1},0,1,
    def_bool,ss_stat},
-  {"overrun_donut_emulate", {&overflows[OVERFLOW_DONUT].emulate},  {0},0,1,
+  {"overrun_donut_emulate", {&overflows[OVERFLOW_DONUT].emulate},  {1},0,1,
    def_bool,ss_stat},
-  {"overrun_missedbackside_warn", {&overflows[OVERFLOW_MISSEDBACKSIDE].warn},  {0},0,1,
+  {"overrun_missedbackside_warn", {&overflows[OVERFLOW_MISSEDBACKSIDE].warn},  {1},0,1,
    def_bool,ss_stat},
-  {"overrun_missedbackside_emulate", {&overflows[OVERFLOW_MISSEDBACKSIDE].emulate},  {0},0,1,
+  {"overrun_missedbackside_emulate", {&overflows[OVERFLOW_MISSEDBACKSIDE].emulate},  {1},0,1,
    def_bool,ss_stat},
 
   {"Prboom-plus 'bad' compatibility settings",{NULL},{0},UL,UL,def_none,ss_none},
