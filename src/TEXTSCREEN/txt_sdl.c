@@ -387,11 +387,11 @@ static int TranslateKey(SDL_keysym *sym)
         case SDLK_KP8:         return KEYP_8;
         case SDLK_KP9:         return KEYP_9;
 
-        case SDLK_KP_PERIOD:   return KEYP_PERIOD;
         case SDLK_KP_MULTIPLY: return KEYP_MULTIPLY;
-        case SDLK_KP_PLUS:     return KEYP_PLUS;
-        case SDLK_KP_MINUS:    return KEYP_MINUS;
         case SDLK_KP_DIVIDE:   return KEYP_DIVIDE;
+		case SDLK_KP_PERIOD:   return KEYP_PERIOD;
+		case SDLK_KP_PLUS:     return KEYP_PLUS;
+        case SDLK_KP_MINUS:    return KEYP_MINUS;
         case SDLK_KP_EQUALS:   return KEYP_EQUALS;
         case SDLK_KP_ENTER:    return KEYP_ENTER;
 
@@ -530,26 +530,6 @@ static const char *SpecialKeyName(int key)
         case KEY_PGDN:        return "PGDN";
         case KEY_INS:         return "INS";
         case KEY_DEL:         return "DEL";
-                 /*
-        case KEYP_0:          return "PAD0";
-        case KEYP_1:          return "PAD1";
-        case KEYP_2:          return "PAD2";
-        case KEYP_3:          return "PAD3";
-        case KEYP_4:          return "PAD4";
-        case KEYP_5:          return "PAD5";
-        case KEYP_6:          return "PAD6";
-        case KEYP_7:          return "PAD7";
-        case KEYP_8:          return "PAD8";
-        case KEYP_9:          return "PAD9";
-        case KEYP_UPARROW:    return "PAD_U";
-        case KEYP_DOWNARROW:  return "PAD_D";
-        case KEYP_LEFTARROW:  return "PAD_L";
-        case KEYP_RIGHTARROW: return "PAD_R";
-        case KEYP_MULTIPLY:   return "PAD*";
-        case KEYP_PLUS:       return "PAD+";
-        case KEYP_MINUS:      return "PAD-";
-        case KEYP_DIVIDE:     return "PAD/";
-                   */
 
         default:              return NULL;
     }
