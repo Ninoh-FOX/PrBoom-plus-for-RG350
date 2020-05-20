@@ -9,7 +9,11 @@ doom.wad \
 doom1.wad \
 doomu.wad \
 freedoom.wad \
+freedoom1.wad \
+freedoom2.wad \
+freedm.wad \
 "
+
 selwad=$(basename "$1")
 selwad=`basename "$1" | tr '[A-Z]' '[a-z]'`
 
