@@ -703,8 +703,8 @@ void I_GetScreenResolution(void)
 {
   int width, height;
 
-  desired_screenwidth = 640;
-  desired_screenheight = 480;
+  desired_screenwidth = 320;
+  desired_screenheight = 240;
 
   if (screen_resolution)
   {
@@ -1455,7 +1455,7 @@ static void ActivateMouse(void)
   SDL_ShowCursor(0);
 #else
   SDL_SetCursor(cursors[1]);
-  SDL_ShowCursor(1);
+  SDL_ShowCursor(0); //JohnnyonFlame- never show the cursor
 #endif
 }
 
@@ -1465,7 +1465,7 @@ static void DeactivateMouse(void)
 #if !SDL_VERSION_ATLEAST(1, 3, 0)
   SDL_SetCursor(cursors[0]);
 #endif
-  SDL_ShowCursor(1);
+  SDL_ShowCursor(0); //JohnnyonFlame- never show the cursor
 }
 
 // Warp the mouse back to the middle of the screen

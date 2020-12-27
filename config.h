@@ -52,7 +52,7 @@
 #define HAVE_LIBM 1
 
 /* Define to 1 if you have the `mad' library (-lmad). */
-/* #undef HAVE_LIBMAD */
+#define HAVE_LIBMAD 1
 
 /* Define to 1 if you have the `pcreposix' library (-lpcreposix). */
 /* #undef HAVE_LIBPCREPOSIX */
@@ -64,7 +64,7 @@
 /* #undef HAVE_LIBPORTMIDI */
 
 /* Define to 1 if you have the `SDL_image' library (-lSDL_image). */
-/* #undef HAVE_LIBSDL_IMAGE */
+#define HAVE_LIBSDL_IMAGE 1
 
 /* Define to 1 if you have the `SDL_mixer' library (-lSDL_mixer). */
 #define HAVE_LIBSDL_MIXER 1
@@ -73,7 +73,7 @@
 #define HAVE_LIBSDL_NET 1
 
 /* Define to 1 if you have the `vorbisfile' library (-lvorbisfile). */
-/* #undef HAVE_LIBVORBISFILE */
+#define HAVE_LIBVORBISFILE 1
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1

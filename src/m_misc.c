@@ -398,7 +398,7 @@ default_t defaults[] =
   #ifdef _MSC_VER
     {"videomode",{NULL, &default_videomode},{0,"OpenGL"},UL,UL,def_str,ss_none},
   #else
-    {"videomode",{NULL, &default_videomode},{0,"OpenGL"},UL,UL,def_str,ss_none},
+    {"videomode",{NULL, &default_videomode},{0,"32"},UL,UL,def_str,ss_none},
   #endif
   {"use_gl_surface",{&use_gl_surface},{1},0,1,def_bool,ss_none},
 #else

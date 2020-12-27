@@ -154,6 +154,9 @@ static int fl_init (int samplerate)
   FSET (str, "synth-midi-bank-select", "gm"); // general midi mode
   // general midi spec says no more than 24 voices needed
   FSET (int, "synth-polyphony", 24);
+  FSET (int, "audio.periods", 2);
+  FSET (int, "audio.period-size", 32);
+  //FSET (str, "audio.sample-format", "float");
 
   // we're not using the builtin shell or builtin midiplayer,
   // and our own access to the synth is protected by mutex in i_sound.c

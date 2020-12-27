@@ -630,7 +630,7 @@ void M_DrawNewGame(void)
 /* cph - make `New Game' restart the level in a netgame */
 static void M_RestartLevelResponse(int ch)
 {
-  if (ch != KEYD_LCTRL)
+	if (ch != 'y' && ch != key_menu_enter) //JohnnyonFlame
     return; 
   
   if (demorecording)
@@ -667,7 +667,7 @@ void M_NewGame(int choice)
 // CPhipps - static
 static void M_VerifyNightmare(int ch)
 {
-  if (ch != KEYD_LCTRL)
+  if (ch != 'y' && ch != key_menu_enter) //JohnnyonFlame
     return;
 
   G_DeferedInitNew(nightmare,epi+1,1);
@@ -927,6 +927,8 @@ void M_SaveSelect(int choice)
   if (!strcmp(savegamestrings[choice],s_EMPTYSTRING)) // Ty 03/27/98 - externalized
     savegamestrings[choice][0] = 0;
   saveCharIndex = strlen(savegamestrings[choice]);
+  snprintf(savegamestrings[choice], SAVESTRINGSIZE, "E%iM%i, KILLS: %i", gameepisode, gamemap, totalkills);
+  //JohnnyonFlame- Added save autonaming
 }
 
 //
@@ -1053,7 +1055,7 @@ int quitsounds2[8] =
 
 static void M_QuitResponse(int ch)
 {
-  if (ch == KEYD_LCTRL)
+  if (ch != 'y' && ch != key_menu_enter) //JohnnyonFlame
   
   //e6y: Optional removal of a quit sound
   if ((!netgame && showendoom) // killough 12/98
@@ -1319,7 +1321,7 @@ char tempstring[80];
 
 static void M_QuickSaveResponse(int ch)
 {
-  if (ch == 'y')  {
+  if (ch == 'y' || ch == key_menu_enter)  { //JohnnyonFlame
     M_DoSave(quickSaveSlot);
     S_StartSound(NULL,sfx_swtchx);
   }
@@ -1353,7 +1355,7 @@ void M_QuickSave(void)
 
 static void M_QuickLoadResponse(int ch)
 {
-  if (ch == 'y') {
+  if (ch == 'y' || ch == key_menu_enter)  { //JohnnyonFlame
     M_LoadSelect(quickSaveSlot);
     S_StartSound(NULL,sfx_swtchx);
   }
@@ -1385,7 +1387,7 @@ void M_QuickLoad(void)
 
 static void M_EndGameResponse(int ch)
 {
-  if (ch != KEYD_LCTRL)
+  if (ch != 'y' && ch != key_menu_enter) //JohnnyonFlame
      return;
   // killough 5/26/98: make endgame quit if recording or playing back demo
   if (demorecording || singledemo);
@@ -4093,6 +4095,35 @@ int M_GetKeyString(int c,int offset)
   return offset;
 }
 
+//JohnnyonFlame: GCW0 Specific controller scheme
+/*int M_GetKeyString(int c,int offset)
+{
+  const char* s;
+
+  switch(c) {
+  case KEYD_TAB:      s = "R";  break;
+  case KEYD_ENTER:      s = "START"; break;
+  case KEYD_ESCAPE:     s = "SELECT";  break;
+  case KEYD_SPACEBAR:   s = "Y"; break;
+  case KEYD_BACKSPACE:  s = "L"; break;
+  case KEYD_RCTRL:      s = "B"; break;
+  case KEYD_LEFTARROW:  s = "LEFT"; break;
+  case KEYD_UPARROW:    s = "UP"; break;
+  case KEYD_RIGHTARROW: s = "RIGHT"; break;
+  case KEYD_DOWNARROW:  s = "DOWN"; break;
+  case KEYD_RSHIFT:     s = "X"; break;
+  case KEYD_RALT:       s = "A";  break;
+  default:              s = ""; break;
+  }
+
+  if (s) { // cph - Slight code change
+	  strcpy(&menu_buffer[offset],s); // string to display
+	  offset += strlen(s);
+  }
+
+  return offset;
+}*/
+
 //
 // The Dynamic HELP screen table.
 
@@ -4503,7 +4534,7 @@ dboolean M_Responder (event_t* ev) {
 
   if (messageToPrint) {
     if (messageNeedsInput == true &&
-  !(ch == ' ' || ch == 'n' || ch == 'y' || ch == key_escape)) // phares
+  !(ch == ' ' || ch == 'n' || ch == 'y' || ch == key_escape || ch == key_menu_backspace || ch == key_menu_enter)) // phares //JohnnyonFlame
       return false;
 
     menuactive = messageLastMenuActive;

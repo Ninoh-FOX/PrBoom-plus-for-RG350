@@ -70,7 +70,7 @@ extern const char *s_D_CDROM; // = D_CDROM;
 //
 //#define PRESSKEY      "press a key."
 extern const char *s_PRESSKEY; // = PRESSKEY;
-//#define PRESSYN       "press y (X) or n (B)."
+//#define PRESSYN       "press y (A) or n (B)."
 extern const char *s_PRESSYN; // = PRESSYN;
 //#define QUITMSG       "are you sure you want to\nquit this great game?"
 extern const char *s_QUITMSG; // = QUITMSG;
@@ -120,7 +120,7 @@ extern const char *s_NETEND; // = NETEND;
 //#define ENDGAME       "are you sure you want to end the game?\n\n"PRESSYN
 extern const char *s_ENDGAME; // = ENDGAME;
 
-//#define DOSA          "(press X to quit)"
+//#define DOSA          "(press A to quit)"
 extern const char *s_DOSA; // = DOSA;
 
 //#define DETAILHI      "High detail"
