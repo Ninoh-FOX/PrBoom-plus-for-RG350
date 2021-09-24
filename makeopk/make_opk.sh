@@ -25,7 +25,6 @@ FLIST="prboom-plus"
 FLIST="${FLIST} prboom.gcw0.desktop"
 FLIST="${FLIST} prboom.png"
 FLIST="${FLIST} prboom-plus-game-server"
-FLIST="${FLIST} DIFF.PATCH"
 FLIST="${FLIST} prboom-launcher"
 FLIST="${FLIST} prboom-plus.wad"
 
